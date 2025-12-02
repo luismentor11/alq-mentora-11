@@ -1,3 +1,5 @@
+import streamlit as st # <--- 
+import google.generativeai as genai
 # Botón de enviar
 if st.button("Enviar a la IA"):
     if user_input:
