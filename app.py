@@ -19,22 +19,21 @@ except Exception as e:
     st.error(f"Error de configuración: {e}")
     st.stop()
 
-# Usamos el modelo más rápido y capaz para aplicaciones de chat y asistencia
-model = genai.GenerativeModel('gemini-2.5-flash')
 
+# --- 3. LÓGICA: Definición del Prompt (El 'cerebro' de tu aplicación) y Mdelo ---
+# Se mueve el 'system_instruction' directamente a la inicialización del modelo,
+# usando el método estándar 'system_instruction' al definir el modelo.
 
-# --- 3. LÓGICA: Definición del Prompt (El 'cerebro' de tu aplicación) ---
-
-# Este diccionario contiene la instrucción del sistema, solucionando el error GenerateContentConfig
-CONFIG_IA = {
-    "system_instruction": """Eres ALQ Asistente de Gestión, una interfaz de inteligencia artificial especializada en sistemas de administración de alquileres. Tu rol es asistir al administrador de la plataforma. Tienes dos funciones principales:
+model = genai.GenerativeModel(
+    'gemini-2.5-flash',
+    system_instruction="""Eres ALQ Asistente de Gestión, una interfaz de inteligencia artificial especializada en sistemas de administración de alquileres. Tu rol es asistir al administrador de la plataforma. Tienes dos funciones principales:
 1.  **Asistencia Técnica:** Brindar instrucciones detalladas sobre el uso de cualquier función de la aplicación (ej: 'cómo se registra un pago', 'cómo se genera un informe').
 2.  **Resumen de Datos:** Responder preguntas concisas sobre el estado financiero de los alquileres, como 'deuda total', 'cobros por propietario', o 'balance del mes'.
 Reglas inquebrantables:
 -  Responde de manera directa, breve y profesional.
 -  Utiliza siempre el **lenguaje técnico** propio de la administración de alquileres (ej: 'canon', 'expensas', 'saldo').
 -  Nunca inventes datos o cifras. Si el usuario pregunta por un número específico (ej: 'deuda de este mes'), pídele que primero ingrese el contexto o especifique el período ('Por favor, especifique el mes o el propietario para obtener el dato')."""
-}
+)
 
 
 # --- 4. FRONTEND: Caja de Texto (Define la variable 'user_input') ---
@@ -48,8 +47,8 @@ if st.button("Enviar a la IA"):
     if user_input:
         with st.spinner("ALQ Asistente está analizando la solicitud..."):
             try:
-                # Envío de la pregunta a Gemini con tu Prompt personalizado
-                response = model.generate_content(user_input, config=CONFIG_IA)
+                # Envío de la pregunta a Gemini. Ya no se necesita 'config' aquí.
+                response = model.generate_content(user_input) 
                 
                 # Muestra la respuesta en la interfaz
                 st.success("¡Respuesta recibida de ALQ Asistente!")
