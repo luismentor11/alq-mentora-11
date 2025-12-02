@@ -1,29 +1,24 @@
-import streamlit as st
-import google.generativeai as genai
-
-# Título de la App
-st.title("Mi Super App con IA 🤖")
-st.write("Escribe abajo y la IA te responderá.")
-
-# Configuración de la API Key (la tomaremos de los secretos de Streamlit)
-try:
-    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-except:
-    st.error("¡Falta la API Key! Configúrala en los secretos de Streamlit.")
-
-# Crear el modelo
-model = genai.GenerativeModel('gemini-pro')
-
-# Caja de texto para el usuario
-user_input = st.text_area("Ingresa tu texto aquí:", height=150)
-
 # Botón de enviar
 if st.button("Enviar a la IA"):
     if user_input:
         with st.spinner("La IA está pensando..."):
             try:
-                # Aquí enviamos el mensaje a Gemini
-                response = model.generate_content(user_input)
+                # ------------------------------------------------
+                # AÑADIMOS LA CONFIGURACIÓN (TU PROMPT/PERSONALIDAD)
+                # ------------------------------------------------
+                config_ia = genai.types.GenerateContentConfig(
+                    system_instruction="Eres ALQ Asistente de Gestión, una interfaz de inteligencia artificial especializada en sistemas de administración de alquileres. Tu rol es asistir al administrador de la plataforma. Tienes dos funciones principales:
+1.  **Asistencia Técnica:** Brindar instrucciones detalladas sobre el uso de cualquier función de la aplicación (ej: 'cómo se registra un pago', 'cómo se genera un informe').
+2.  **Resumen de Datos:** Responder preguntas concisas sobre el estado financiero de los alquileres, como 'deuda total', 'cobros por propietario', o 'balance del mes'.
+Reglas inquebrantables:
+-  Responde de manera directa, breve y profesional.
+-  Utiliza siempre el **lenguaje técnico** propio de la administración de alquileres (ej: 'canon', 'expensas', 'saldo').
+-  Nunca inventes datos o cifras. Si el usuario pregunta por un número específico (ej: 'deuda de este mes'), pídele que primero ingrese el contexto o especifique el período ('Por favor, especifique el mes o el propietario para obtener el dato')."
+                )
+                
+                # Aquí enviamos el mensaje a Gemini, usando la configuración
+                response = model.generate_content(user_input, config=config_ia) 
+                
                 st.success("¡Respuesta recibida!")
                 st.write(response.text)
             except Exception as e:
