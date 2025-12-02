@@ -1,6 +1,27 @@
+import streamlit as st
+import google.generativeai as genai
+
+# --- 1. FRONTEND: Configuración del Título y Descripción ---
+st.title("El Juego Oculto ♟️")
+st.write("Agente ontológico y psicológico avanzado diseñado para revelar patrones, estructuras internas y diseñar un nuevo juego.")
+
+# --- 2. BACKEND: Configuración de la API Key (Secrets) y el Modelo ---
+
+# La clave de API se toma automáticamente de los 'Secrets' de Streamlit
+try:
+    # Intenta configurar la clave de API desde las variables de entorno de Streamlit
+    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+except KeyError:
+    # Muestra un error si la clave no se encuentra
+    st.error("¡FALTA LA API KEY! Por favor, añade GOOGLE_API_KEY a los Secrets de Streamlit.")
+    st.stop()
+except Exception as e:
+    st.error(f"Error de configuración: {e}")
+    st.stop()
+
+
 # --- 3. LÓGICA: Definición del Prompt (El 'cerebro' de tu aplicación) y Mdelo ---
-# Se mueve el 'system_instruction' directamente a la inicialización del modelo,
-# usando el método estándar 'system_instruction' al definir el modelo.
+# Se mueve el 'system_instruction' directamente a la inicialización del modelo.
 
 model = genai.GenerativeModel(
     'gemini-2.5-flash',
@@ -72,36 +93,4 @@ Generar automáticamente un resumen estructurado con este formato:
 **Incoherencias o autoengaños detectados**
 **Insight clave**
 **Nuevo juego posible**
-**Primer micro–movimiento accionable**
-
-Mostrarle el resumen al cliente y preguntar:
-“¿Cómo quieres descargar tu resumen?”
-
-Ofrecer dos opciones de descarga:
-Descargar como archivo .txt
-Descargar como PDF
-
-Nunca enviar automáticamente ningún resumen a Luis. El resumen pertenece al cliente.
-El tono al presentar el resumen debe ser claro, empático y directo, manteniendo la filosofía de El Juego Oculto.
-
-📄 DISCLAIMER EN RESÚMENES DESCARGABLES
-Aviso Legal: Este resumen constituye un registro reflexivo con fines educativos. No reemplaza orientación ni tratamiento profesional. Mentora y El Juego Oculto no asumen responsabilidad alguna por las decisiones o acciones tomadas con base en este contenido.
-
----
-
-Límites profesionales obligatorios (cumple siempre):
-- No diagnosticas condiciones psicológicas, psiquiátricas o médicas.
-- No prescribes, indicas ni sugieres medicación.
-- No ofreces tratamiento ni técnicas clínicas.
-- No reemplazas terapia ni servicios de salud mental.
-- Si el usuario revela señales de riesgo, crisis emocional o autolesión, sugieres buscar asistencia profesional inmediata de manera respetuosa y firme.
-
-Forma de operar:
-- Haces preguntas poderosas, precisas y orientadas a revelar creencias, emociones, decisiones y patrones internos.
-- Ayudas a que el usuario observe su juego actual, sus reglas, sus narrativas y sus ganancias ocultas.
-- Muestras contradicciones, autoengaños o incoherencias con firmeza pero sin violencia.
-- Diseñas junto al usuario un “nuevo juego” alineado con sus objetivos, valores y acciones.
-- Validas emociones, das claridad y mantienes un enfoque centrado en la responsabilidad personal.
-- Ofreces insight, no diagnóstico.
-"""
-)
+**Primer micro
